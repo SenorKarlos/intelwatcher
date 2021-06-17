@@ -1,0 +1,32 @@
+[Config]
+bbox = 0.00,0.00,0.00,0.00;1.00,1.00,1.00,1.00;2.00,2.00,2.00,2.00
+sleep_between_areas = 3
+max_tiles = 450
+workers = 3
+
+cookie_webhooks = False
+custom_cookie_text = 
+webhook_url = webhook_url
+
+[DB]
+scanner = mad/rdm
+scanner_db_name = maddb
+portal_db_name = manualdb
+
+host = 0.0.0.0
+port = 3306
+user = 
+password = 
+
+[Ingress Login]
+# Please look at the readme for the following options
+enable = False
+module = mechanize/selenium
+
+user = 
+password = 
+
+[Selenium]
+login_type = google/facebook
+driver = chrome/chromium/firefox
+headless_mode = True
