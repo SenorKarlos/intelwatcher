@@ -189,7 +189,7 @@ def selenium_cookie(config, log):
                         'client_id=369030586920-h43qso8aj64ft2h5ruqsqlaia9g9huvn.apps.googleusercontent.com&'
                         'redirect_uri=https://intel.ingress.com/&prompt=consent%20select_account&state=GOOGLE'
                         '&scope=email%20profile&response_type=code'))
-            driver.find_element(By.ID, 'profileIdentifier').click()
+            driver.find_element_by_xpath("//div[@data-email='" + config.ingress_user + "']").click()
             driver.implicitly_wait(10)
         except NoSuchElementException:
             _save_screenshot_on_failure('intel_login_init.png')
