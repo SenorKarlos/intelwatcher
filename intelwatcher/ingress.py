@@ -145,8 +145,12 @@ class IntelMap:
             if not result or result.text == "{}" or not result.text:
                 self.scrape_tiles(tiles, portals, log, progress, task)
                 return
-
-            result = result.json()["result"]["map"]
+            try:
+                result = result.json()["result"]["map"]
+            except:
+                self.scrape_tiles(tiles, portals, log, progress, task)
+                return
+            
             errors = []
             for tile in tiles:
                 payload = result.get(tile.name)
