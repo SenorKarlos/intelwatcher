@@ -1,0 +1,27 @@
+version: '2.4'
+services:
+  ofelia:
+    image: mcuadros/ofelia:latest
+    restart: always
+    command: daemon --docker
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  intelwatcher:
+    container_name: intelwatcher
+    build: ./intelwatcher
+    tty: true
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./intelwatcher/config.ini:/usr/src/app/config.ini
+      - ./intelwatcher/cookie.txt:/usr/src/app/cookie.txt
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.intelwatcher.schedule: "@every 48h"
+      ofelia.job-exec.intelwatcher.command: "python3 intel_watcher.py"
+    depends_on: 
+      - rocketdb
+    networks:
+        - default
