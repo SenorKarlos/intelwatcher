@@ -130,14 +130,16 @@ def selenium_cookie(config, log):
         options.add_argument('--no-sandbox')
 
         if config.webdriver == 'chromium':
+            from selenium.webdriver.chrome.service import Service as ChromiumService
             from webdriver_manager.chrome import ChromeDriverManager
-            from webdriver_manager.utils import ChromeType
+            from webdriver_manager.core.utils import ChromeType
 
-            driver = webdriver.Chrome(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install(), options=options)
+            driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=options)
         else:
+            from selenium.webdriver.chrome.service import Service as ChromeService
             from webdriver_manager.chrome import ChromeDriverManager
 
-            driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     if config.ingress_login_type == 'google':
         log.info('Login to Google via Stackoverflow')
