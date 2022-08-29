@@ -97,6 +97,9 @@ def selenium_cookie(config, log):
         driver.quit()
         sys.exit(1)
 
+    def _save_screenshot(filename):
+        driver.save_screenshot('{}/{}'.format(str(debug_dir), filename))
+
     debug_dir = Path(__file__).resolve().parent.parent / 'debug'
     debug_dir.mkdir(exist_ok=True)
 
@@ -174,6 +177,11 @@ def selenium_cookie(config, log):
 
             pw_element.send_keys(config.ingress_password)
             driver.find_element(By.ID, 'passwordNext').click()
+            log.info('Password Click')
+            time.sleep(10)
+            _save_screenshot('google_login_code.png')
+            log.info('sleep 60sec')
+            time.sleep(60)
             driver.implicitly_wait(10)
         except NoSuchElementException:
             _save_screenshot_on_failure('google_login_password.png')
@@ -191,7 +199,7 @@ def selenium_cookie(config, log):
                         'client_id=369030586920-h43qso8aj64ft2h5ruqsqlaia9g9huvn.apps.googleusercontent.com&'
                         'redirect_uri=https://intel.ingress.com/&prompt=consent%20select_account&state=GOOGLE'
                         '&scope=email%20profile&response_type=code'))
-            driver.find_element('xpath', '//div[@data-email='" + config.ingress_user + "']').click()
+            driver.find_element("xpath","//div[@data-email='" + config.ingress_user + "']").click()
             driver.implicitly_wait(10)
         except NoSuchElementException:
             _save_screenshot_on_failure('intel_login_init.png')
@@ -201,8 +209,7 @@ def selenium_cookie(config, log):
         final_cookie = _write_cookie(log, {c['name']: c['value'] for c in driver.get_cookies()})
     elif config.ingress_login_type == 'facebook':
         driver.get('http://intel.ingress.com')
-        driver.find_element(
-            'xpath', '//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]').click()
+        driver.find_element("xpath", '//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]').click()
         driver.implicitly_wait(10)
 
         log.info('Enter username...')
