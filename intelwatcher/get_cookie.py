@@ -204,6 +204,7 @@ def selenium_cookie(config, log):
             '//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]'
         ).click()
         driver.implicitly_wait(10)
+        driver.find_element(By.XPATH, '//*[@data-cookiebanner="accept_button"]').click()
 
         log.info('Enter username...')
         try:
