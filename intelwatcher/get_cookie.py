@@ -209,9 +209,9 @@ def selenium_cookie(config, log):
         final_cookie = _write_cookie(log, {c['name']: c['value'] for c in driver.get_cookies()})
     elif config.ingress_login_type == 'facebook':
         driver.get('http://intel.ingress.com')
-        driver.find_element("xpath", "//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]").click()
+        driver.find_element("xpath",'//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]').click()
         driver.implicitly_wait(10)
-        driver.find_element("xpath", "//*[@data-cookiebanner="accept_button"]").click()
+        driver.find_element("xpath",'//*[@data-cookiebanner="accept_button"]').click()
 
         log.info('Enter username...')
         try:
