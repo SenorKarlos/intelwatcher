@@ -2,3 +2,5 @@ cookie.txt
 config.ini
 .idea/*
 venv
+geckodriver.log
+intelwatcher/_pycache_/
