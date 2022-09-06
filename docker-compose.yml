@@ -22,5 +22,3 @@ services:
       ofelia.enabled: "true"
       ofelia.job-exec.intelwatcher.schedule: "@every 48h"
       ofelia.job-exec.intelwatcher.command: "python3 intel_watcher.py"
-    networks:
-        - default
