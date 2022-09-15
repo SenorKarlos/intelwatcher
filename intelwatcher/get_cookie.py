@@ -33,7 +33,7 @@ def mechanize_cookie(config, log):
     browser.set_cookiejar(cookies)
     browser.addheaders = [
         ('User-agent',
-         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7')
+         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.102 Safari/537.36')
     ]
     browser.set_handle_refresh(False)
     log.info("Everything set - Let's go")
@@ -109,7 +109,7 @@ def selenium_cookie(config, log):
         os.remove(f)
 
     user_agent = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                  ' Chrome/60.0.3112.50 Safari/537.36')
+                  ' Chrome/105.0.5195.102 Safari/537.36')
 
     if config.webdriver == 'firefox':
         options = webdriver.FirefoxOptions()
