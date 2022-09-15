@@ -33,7 +33,7 @@ def mechanize_cookie(config, log):
     browser.set_cookiejar(cookies)
     browser.addheaders = [
         ('User-agent',
-         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7')
+         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.102 Safari/537.36')
     ]
     browser.set_handle_refresh(False)
     log.info("Everything set - Let's go")
@@ -97,6 +97,9 @@ def selenium_cookie(config, log):
         driver.quit()
         sys.exit(1)
 
+    def _save_screenshot(filename):
+        driver.save_screenshot('{}/{}'.format(str(debug_dir), filename))
+
     debug_dir = Path(__file__).resolve().parent.parent / 'debug'
     debug_dir.mkdir(exist_ok=True)
 
@@ -106,7 +109,7 @@ def selenium_cookie(config, log):
         os.remove(f)
 
     user_agent = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                  ' Chrome/60.0.3112.50 Safari/537.36')
+                  ' Chrome/105.0.5195.102 Safari/537.36')
 
     if config.webdriver == 'firefox':
         options = webdriver.FirefoxOptions()
@@ -130,14 +133,16 @@ def selenium_cookie(config, log):
         options.add_argument('--no-sandbox')
 
         if config.webdriver == 'chromium':
+            from selenium.webdriver.chrome.service import Service as ChromiumService
             from webdriver_manager.chrome import ChromeDriverManager
-            from webdriver_manager.utils import ChromeType
+            from webdriver_manager.core.utils import ChromeType
 
-            driver = webdriver.Chrome(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install(), options=options)
+            driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=options)
         else:
+            from selenium.webdriver.chrome.service import Service as ChromeService
             from webdriver_manager.chrome import ChromeDriverManager
 
-            driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     if config.ingress_login_type == 'google':
         log.info('Login to Google via Stackoverflow')
@@ -172,6 +177,11 @@ def selenium_cookie(config, log):
 
             pw_element.send_keys(config.ingress_password)
             driver.find_element(By.ID, 'passwordNext').click()
+            log.info('Password Click')
+            time.sleep(10)
+            _save_screenshot('google_login_code.png')
+            log.info('sleep 60sec')
+            time.sleep(60)
             driver.implicitly_wait(10)
         except NoSuchElementException:
             _save_screenshot_on_failure('google_login_password.png')
@@ -189,7 +199,7 @@ def selenium_cookie(config, log):
                         'client_id=369030586920-h43qso8aj64ft2h5ruqsqlaia9g9huvn.apps.googleusercontent.com&'
                         'redirect_uri=https://intel.ingress.com/&prompt=consent%20select_account&state=GOOGLE'
                         '&scope=email%20profile&response_type=code'))
-            driver.find_element_by_xpath("//div[@data-email='" + config.ingress_user + "']").click()
+            driver.find_element("xpath","//div[@data-email='" + config.ingress_user + "']").click()
             driver.implicitly_wait(10)
         except NoSuchElementException:
             _save_screenshot_on_failure('intel_login_init.png')
@@ -199,11 +209,9 @@ def selenium_cookie(config, log):
         final_cookie = _write_cookie(log, {c['name']: c['value'] for c in driver.get_cookies()})
     elif config.ingress_login_type == 'facebook':
         driver.get('http://intel.ingress.com')
-        driver.find_element(
-            By.XPATH,
-            '//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]'
-        ).click()
+        driver.find_element("xpath", '//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]').click()
         driver.implicitly_wait(10)
+        driver.find_element("xpath", '//*[@data-cookiebanner="accept_button"]').click()
 
         log.info('Enter username...')
         try:
